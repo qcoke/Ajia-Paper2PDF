@@ -1,0 +1,30 @@
+{
+  "name": "ajia-paper2pdf",
+  "version": "1.0.0",
+  "description": "PDF打印模板",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qcoke/Ajia-Paper2PDF.git"
+  },
+  "keywords": [
+    "打印",
+    "模板"
+  ],
+  "author": "LIUCAN",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qcoke/Ajia-Paper2PDF/issues"
+  },
+  "homepage": "https://github.com/qcoke/Ajia-Paper2PDF#readme",
+  "devDependencies": {
+    "browser-sync": "^2.27.10",
+    "gulp": "^4.0.2"
+  },
+  "dependencies": {
+    "gutenberg-css": "^0.6.1"
+  }
+}
