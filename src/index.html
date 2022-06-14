@@ -63,8 +63,7 @@
         }
         /* 题目 */
         .question-item {
-            border: 1px solid #f00;
-            margin: 0 0 2cm 0;
+            margin: 0 0 5cm 0;
         }
     </style>
     <script type="text/javascript" src="js/polyfill.min.js"></script>
@@ -3399,13 +3398,22 @@
             filters: {
                 formatImage(val) {
                     let res = "";
-                    const regWidth = /width\='\d+px'/gi;
+                    const regPxAttr = /'\d+px'/gi;
                     const px2pt = function(pxNumber) {
-
+                        const val = regPxAttr.exec(pxNumber);
+                        const numVal = /\d+/.exec(val);
+                        if(numVal[0]){
+                            const newVal = parseInt(numVal[0], 10) * 0.75;
+                            const newAttr = `'${newVal}pt'`;
+                            return newAttr;
+                        }
+                        return "";
                     }
-                    if(regWidth.test(val)) {
+                    if(regPxAttr.test(val) === true) {
                         // 找到中间的 px 把它转换成为 pt。
-                        console.log("匹配结果:", val);
+                        const replaceVal = px2pt(val);
+                        const replaceResult = val.replaceAll(regPxAttr, replaceVal);
+                        return replaceResult;
                     }
                     return val;
                 }
