@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="author" content="LIU">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
     <title>打印预览</title>
-    <link type="text/css" rel="stylesheet" href="./print.css" />
-    <script type="text/javascript" src="./handlebars.js"></script>
+    <script type="text/javascript" src="js/polyfill.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/lodash.min.js"></script>
+    <script type="text/javascript" src="js/bookjs-eazy.min.js"></script>
     <script type="text/javascript">
     const data = {
         data: [
@@ -3080,24 +3086,6 @@
     </script>
 </head>
 <body>
-    <script id="page-template" type="text/x-handlebars-template">
-        <div class="page">
-            <div class="subpage">
-                {{#each data}}
-                    <div class="question-container">{{{questionStem}}}</div>
-                {{/each}}
-            </div>
-        </div>
-      </script>
-    <script>
-    var source = document.getElementById("page-template").innerHTML;
-    var template = Handlebars.compile(source);
-    var html = template(data);
-    console.log('html:', html);
-    setTimeout(() => {
-        document.body.innerHTML = html;    
-    }, 10000);
-    
-    </script>
+    Hello
 </body>
 </html>
