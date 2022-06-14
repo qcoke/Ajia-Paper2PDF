@@ -23,7 +23,7 @@ body {
 .subpage {
     padding: 1cm;
     border: 1px dashed #cccccc;
-    height: 256mm;
+    /* height: 256mm; */
 }
 
 @page {

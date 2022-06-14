@@ -3094,7 +3094,10 @@
     var template = Handlebars.compile(source);
     var html = template(data);
     console.log('html:', html);
-    document.body.innerHTML = html;
+    setTimeout(() => {
+        document.body.innerHTML = html;    
+    }, 10000);
+    
     </script>
 </body>
 </html>
