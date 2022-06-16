@@ -97,9 +97,8 @@
         </template>
     </div>
     <script>
-        let data = [];
-        let url = "https://test-smartwork.ajia.cn/teacher/teaching-resource/error-textbooks/recommend-questions?id=" + 63;
-        bookConfig = {
+        /* 通用的定义配置 */
+        var bookConfig = {
             pageSize: 'ISO_A4',
             orientation: 'portrait',
             simplePageNum: {
@@ -111,76 +110,113 @@
             },
             showSlide: false,
             start: false,
+        };
+
+        /*
+         * 转换像素到磅
+         * @method  getUrlParams
+         * @params  {String}    key     参数名称
+         * @return  {String}
+         */
+        function getUrlParams(key){
+            let url = window.location.search.substr(1);
+            if(url == "") {
+                return false;
+            }
+            let paramsArr = url.split("&");
+            for(let i=0;i<paramsArr.length;i++){
+                let combina = paramsArr[i].split("=");
+                if(combina[0] === key){
+                    return combina[i];
+                }
+            }
+            return false;       c
+        }
+
+        /*
+         * 转换像素到磅
+         * @method  formatImage
+         * @params  {String}    val     像素值 例： 120px
+         * @return  {String}    例：77pt
+         */
+        function formatImage(val) {
+            let res = "";
+            const regPxAttr = /'\d+px'/gi;
+            const px2pt = function(pxNumber) {
+                const val = regPxAttr.exec(pxNumber);
+                const numVal = /\d+/.exec(val);
+                if(numVal[0]){
+                    const newVal = parseInt(numVal[0], 10) * 0.8;
+                    const newAttr = `'${newVal}pt'`;
+                    return newAttr;
+                }
+                return "";
+            }
+            if(regPxAttr.test(val) === true) {
+                // 找到中间的 px 把它转换成为 pt。
+                const replaceVal = px2pt(val);
+                const replaceResult = val.replaceAll(regPxAttr, replaceVal);
+                return replaceResult;
+            }
+            return val;
+        }
+
+        /*
+         * 开始 Print 页面渲染
+         * @method  startRenderPrint
+         * @params  {Object}    data     三组不同的数据
+         * @return  {void}
+         */
+        function startRenderPrint(data){
+            new Vue({
+                el: '#content-box',
+                data: function () {
+                    return {
+                        result: data
+                    }
+                },
+                filters: {
+                    foramtBookType(val) {
+                        var resultStr = "";
+                        if(val === "basicRecommendQuestions") {
+                            resultStr = "基础练习";
+                        }
+                        if(val === "difficultRecommendQuestions") {
+                            resultStr = "巩固练习";
+                        }
+                        if(val === "errorBookQuestions") {
+                            resultStr = "原错题";
+                        }
+                        return resultStr;
+                    }
+                }
+            })
+            bookConfig.start = true;
         }
         
-        $.ajax({
-            type: 'GET',
-            url: url,
-            headers: {
-                token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ3ZWNoYXQtbWluaWFwcCIsInNlc3Npb25rZXkiOiJRMzh6VW1NcXdzWW1VWHRuTThCMGN3PT0iLCJpc3MiOiJ4ei1zbWFydC13b3JrLXRlYWNoZXIiLCJleHAiOjE2NTU4MDg1OTksInVzZXJpZCI6IjE1MDIxMTE3MTU3MDQzMDc3MTIiLCJpYXQiOjE2NTUyMDM3OTksImp0aSI6ImE3ZjI5OTc4NGI5ZTQ3ZTQ4YTc5OTVkNDcwZWMwZTRmIn0.MGLmtAP-7EL4s87c68uHPYQx8lFJb1A0HZ8OQ5LkO94'
-            },
-            success: function(result) {
-                console.log("result:", result);
-                if(result.code === 200 && result.success === true) {
-                    const data = result.data;
-                    new Vue({
-                        el: '#content-box',
-                        data: function () {
-                            return {
-                                result: data
-                            }
-                        },
-                        filters: {
-                            // 转换不同错题本类型
-                            foramtBookType(val) {
-                                var resultStr = "";
-                                if(val === "basicRecommendQuestions") {
-                                    resultStr = "基础练习";
-                                }
-                                if(val === "difficultRecommendQuestions") {
-                                    resultStr = "巩固练习";
-                                }
-                                if(val === "errorBookQuestions") {
-                                    resultStr = "原错题";
-                                }
-                                return resultStr;
-                            },
-                            // 转换像素到磅
-                            formatImage(val) {
-                                let res = "";
-                                const regPxAttr = /'\d+px'/gi;
-                                const px2pt = function(pxNumber) {
-                                    const val = regPxAttr.exec(pxNumber);
-                                    const numVal = /\d+/.exec(val);
-                                    if(numVal[0]){
-                                        const newVal = parseInt(numVal[0], 10) * 0.8;
-                                        const newAttr = `'${newVal}pt'`;
-                                        return newAttr;
-                                    }
-                                    return "";
-                                }
-                                if(regPxAttr.test(val) === true) {
-                                    // 找到中间的 px 把它转换成为 pt。
-                                    const replaceVal = px2pt(val);
-                                    const replaceResult = val.replaceAll(regPxAttr, replaceVal);
-                                    return replaceResult;
-                                }
-                                return val;
-                            }
-                        }
-                    })
-                    // 渲染完成，可以打印
-                    bookConfig.start = true;
-                }else{
+        $(document).ready(function(){
+            let data = [];
+            let id = getUrlParams("id"), token = getUrlParams("token");
+            let url = "https://test-smartwork.ajia.cn/teacher/teaching-resource/error-textbooks/recommend-questions?id="+id;
+            $.ajax({
+                type: 'GET',
+                url: url,
+                headers: {token: token},
+                success: function(result) {
+                    if(result.code === 200 && result.success === true) {
+                        const data = result.data;
+                        
+                    }else{
+                        alert(err || "网络错误，请稍后重试。");
+                        return false;
+                    }
+                },
+                error: function(err) {
                     alert(err || "网络错误，请稍后重试。");
                     return false;
                 }
-            },
-            error: function(err) {
-                alert(err || "网络错误，请稍后重试。");
-                return false;
-            }
-        })
+            })
+        });
     </script>
 </body>
 
