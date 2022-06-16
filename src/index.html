@@ -127,10 +127,10 @@
             for(let i=0;i<paramsArr.length;i++){
                 let combina = paramsArr[i].split("=");
                 if(combina[0] === key){
-                    return combina[i];
+                    return combina[1];
                 }
             }
-            return false;       c
+            return false;
         }
 
         /*
@@ -205,9 +205,9 @@
                 success: function(result) {
                     if(result.code === 200 && result.success === true) {
                         const data = result.data;
-                        
+                        startRenderPrint(data);
                     }else{
-                        alert(err || "网络错误，请稍后重试。");
+                        alert("网络错误，请稍后重试。");
                         return false;
                     }
                 },
